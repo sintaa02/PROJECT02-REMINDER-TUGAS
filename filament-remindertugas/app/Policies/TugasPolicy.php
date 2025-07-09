@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Tugas;
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
+
+class TugasPolicy
+{
+
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+
+        return true;
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, Tugas $tugas): bool
+    {
+
+        // User hanya boleh lihat tugasnya sendiri
+        return $user->id === $tugas->user_id;
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        // Hanya user dengan role 'user' yang boleh membuat tugas
+        return $user->hasRole('user');
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, Tugas $tugas): bool
+    {
+        return $user->hasRole('user') && $user->id === $tugas->user_id;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Tugas $tugas): bool
+    {
+        return $user->hasRole('user') && $user->id === $tugas->user_id;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, Tugas $tugas): bool
+    {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, Tugas $tugas): bool
+    {
+        return false;
+    }
+}
